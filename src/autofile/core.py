@@ -31,7 +31,8 @@ class Move:
 
 
 def load_config(path: Path) -> dict:
-    with open(path, encoding="utf-8") as fh:
+    # utf-8-sig: Windows editors (and PowerShell) often write a BOM
+    with open(path, encoding="utf-8-sig") as fh:
         config = json.load(fh)
     if "rules" not in config:
         raise ValueError(f"config {path} has no 'rules' section")
