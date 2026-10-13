@@ -63,6 +63,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--config", type=Path, default=Path("config.json"), help="path to config.json")
     parser.add_argument("--apply", action="store_true", help="execute the plan after confirmation (default: dry run)")
     parser.add_argument("--watch", action="store_true", help="watch the folder and sort new files as they land")
+    parser.add_argument("--yes", action="store_true", help="auto-approve moves without prompting (use with care)")
+    parser.add_argument("--duration", type=float, default=0, help="stop watching after N seconds (mainly for testing)")
     args = parser.parse_args(argv)
 
     try:
@@ -77,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
         except ImportError:
             print("watch mode needs watchdog: pip install watchdog", file=sys.stderr)
             return 1
-        return run_watcher(args.config)
+        return run_watcher(args.config, duration=args.duration, auto_yes=args.yes)
 
     if not args.apply:
         print_plan(moves, root)
@@ -90,6 +92,11 @@ def main(argv: list[str] | None = None) -> int:
     print_plan(moves, root)
     print()
     log_path = Path(args.config).resolve().parent / "autofile.log"
-    moved, skipped = core.execute(moves, log_path, Prompter().approve)
+    approve = (lambda m: True) if args.yes else Prompter().approve
+    try:
+        moved, skipped = core.execute(moves, log_path, approve)
+    except OSError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
     print(f"\ndone: {moved} moved, {skipped} skipped. log: {log_path}")
     return 0
