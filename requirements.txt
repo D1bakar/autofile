@@ -1,0 +1,5 @@
+# Runtime: stdlib only for scan/classify/apply.
+# (watchdog is added by feat/watch-mode)
+
+# --- dev ---
+pytest>=8.0
