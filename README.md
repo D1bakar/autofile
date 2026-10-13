@@ -21,24 +21,42 @@ Requires Python 3.10+.
 
 ## Usage
 
+Run it — it asks you what to do. No flags to remember:
+
 ```bash
-python autofile.py               # dry run: print the plan, change nothing
-python autofile.py --apply       # execute with per-file y/n/all/quit prompts
-python autofile.py --watch       # watch the folder; asks before each new file
-python autofile.py --watch --yes # watch unattended (auto-approve)
+python autofile.py
+```
+
+```
+------------------------------------------------------------
+  AUTOFILE  -  sorts loose files into folders by type
+------------------------------------------------------------
+  folder : C:\Users\Sayantan\Desktop\Developer
+  found  : 10 loose file(s)
+           (project folders are never touched)
+
+  1) Preview   - show what would happen (nothing moves)
+  2) Sort all  - move every file now
+  3) Review    - ask me about each file
+  4) Watch     - sort new files as they land (Ctrl+C stops it)
+  5) Quit
+
+  Your choice [1]:
+```
+
+- **1** shows the plan and moves nothing (safe default)
+- **2** asks one confirmation, then sorts everything
+- **3** asks one plain-English question per file:
+  `Move "notes.txt" into the documents folder?  [Y]es / [N]o / [A]ll / [Q]uit`
+- **4** watches the folder while you work; Ctrl+C stops it and returns to the menu
+
+### For powers (scripting)
+
+```bash
+python autofile.py --apply            # skip menu, go straight to per-file prompts
+python autofile.py --apply --yes      # skip menu and prompts (unattended)
+python autofile.py --watch --yes      # unattended watch
 python autofile.py --help
-```
-
-Example dry run:
-
-```
-plan for C:\Users\Sayantan\Desktop\Developer  (11 loose file(s))
-
-  documents  open code 2.txt  ->  _sorted\documents\open code 2.txt
-  images     shot.png         ->  _sorted\images\shot.png
-  other      unknown.bin      ->  _sorted\other\unknown.bin
-
-(dry run - nothing was moved. use --apply to execute.)
 ```
 
 ## Safety model
