@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Tool output (never committed)
+autofile.log
+_sorted/
+
+# Test artifacts
+.pytest_cache/
+
+# Editors
+.idea/
+.vscode/
+.DS_Store
